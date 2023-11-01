@@ -21,11 +21,11 @@ android {
 
     signingConfigs {
         create("staging") {
-//            setupSigningConfig("./keystore-staging.properties")
+            setupSigningConfig("./keystore-staging.properties")
         }
 
         create("dev") {
-//            setupSigningConfig("./keystore-dev.properties")
+            setupSigningConfig("./keystore-dev.properties")
         }
     }
 
