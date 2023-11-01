@@ -94,7 +94,8 @@ jobs:
           # name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - APK(s) release generated
           # path: ${{ env.main_project_module }}/build/outputs/apk/release/
         
-      # - name: Upload Dev Debug artifact to Firebase App Distribution
-      #   with:
-      #     appId: '1:62500169855:android:95d4ee4f4e1ca5170eb74a'
-      #     serviceCredentialsFileContent: 
+      - name: Upload Dev Debug artifact to Firebase App Distribution
+        with:
+          appId: '1:418167375742:android:f26868d0619266f7f0952f'
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          file: android-project/${{ env.main_project_module }}/build/outputs/apk/dev/debug/app-dev-debug.apk
