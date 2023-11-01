@@ -1,0 +1,100 @@
+name: Generated APK and Firebase Distribution
+
+env:
+  main_project_module: app
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # defaults:
+    #   run:
+    #     working-directory: ./android-dapp
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
+
+      # Set Current Date As Env Variable
+      - name: Set current date as env variable
+        run: echo "date_today=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      # Set Repository Name As Env Variable
+      - name: Set repository name as env variable
+        run: echo "repository_name=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'corretto'
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Setup Gradle Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
+
+      - name: Execute Gradle build
+        run: |
+          cd ./android-project
+          ./gradlew app:assembleDevDebug &&  ./gradlew app:assembleDevDebugUnitTest
+
+      - name: Run Dev Debug Unit Test
+        run: |
+          cd ./android-project
+          ./gradlew app:testDevDebugUnitTest
+
+      - name: Create test report
+        run: |
+          cd ./android-project
+          ./gradlew createDevDebugCoverageReport
+
+      - name: Run gradle project
+        run: |
+          cd ./android-project
+          ./gradlew buildDevDebug
+
+      # Create APK Debug
+      - name: Build apk debug project (APK) - ${{ env.main_project_module }} module
+        run: |
+          cd ./android-project
+          ./gradlew assembleDevDebug
+
+      # Create APK Release
+      # - name: Build apk release project (APK) - ${{ env.main_project_module }} module
+        # run: ./gradlew assemble
+
+      # Upload Artifact Build
+      # Noted For Output [main_project_module]/build/outputs/apk/debug/
+      - name: Upload APK Debug - ${{ env.repository_name }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - APK(s) debug generated
+          path: android-project/${{ env.main_project_module }}/build/outputs/apk/dev/debug/
+
+      # Noted For Output [main_project_module]/build/outputs/apk/release/
+      # - name: Upload APK Release - ${{ env.repository_name }}
+        # uses: actions/upload-artifact@v3
+        # with:
+          # name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - APK(s) release generated
+          # path: ${{ env.main_project_module }}/build/outputs/apk/release/
+        
+      # - name: Upload Dev Debug artifact to Firebase App Distribution
+      #   with:
+      #     appId: '1:62500169855:android:95d4ee4f4e1ca5170eb74a'
+      #     serviceCredentialsFileContent: 
