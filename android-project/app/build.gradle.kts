@@ -1,17 +1,38 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
 
+fun com.android.build.api.dsl.ApkSigningConfig.setupSigningConfig(fileName: String) {
+    val properties = Properties().apply {
+        load(File(fileName).reader())
+    }
+    keyAlias = properties.getProperty("keyAlias")
+    keyPassword = properties.getProperty("keyPassword")
+    storeFile = file(properties.getProperty("storeFile"))
+    storePassword = properties.getProperty("storePassword")
+}
+
 android {
     namespace = "com.example.demofirebasedistribution"
-    compileSdk = 33
+    compileSdk = 34
+
+    signingConfigs {
+        create("staging") {
+//            setupSigningConfig("./keystore-staging.properties")
+        }
+
+        create("dev") {
+//            setupSigningConfig("./keystore-dev.properties")
+        }
+    }
 
     defaultConfig {
         applicationId = "com.example.demofirebasedistribution"
         minSdk = 24
-        targetSdk = 33
-        versionCode = 1
+        targetSdk = 34
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -19,28 +40,67 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isDebuggable = false
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
+
+        debug {
+            isDebuggable = true
+            isMinifyEnabled = false
+        }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
+
+    flavorDimensions += "env"
+    productFlavors {
+        val dev by creating {
+            dimension = "env"
+            applicationIdSuffix = ".dev"
+            versionCode = 1
+            versionNameSuffix = "-dev${versionCode.toString().padStart(2, '0')}"
+            signingConfig = signingConfigs.getByName("dev")
+        }
+
+        val staging by creating {
+            dimension = "env"
+            applicationIdSuffix = ".staging"
+            versionCode = 1
+            versionNameSuffix = "-staging${versionCode.toString().padStart(2, '0')}"
+            signingConfig = signingConfigs.getByName("staging")
+        }
+
+        val prod by creating {
+            dimension = "env"
+        }
     }
 }
 
 dependencies {
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.10.0")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }
