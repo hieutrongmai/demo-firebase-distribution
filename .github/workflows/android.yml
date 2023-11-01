@@ -95,6 +95,7 @@ jobs:
           # path: ${{ env.main_project_module }}/build/outputs/apk/release/
         
       - name: Upload Dev Debug artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: '1:418167375742:android:f26868d0619266f7f0952f'
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
