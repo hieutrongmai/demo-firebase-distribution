@@ -13,9 +13,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     working-directory: ./android-dapp
+    defaults:
+      run:
+        working-directory: ./android-dapp
 
     steps:
       - uses: actions/checkout@v3
@@ -50,30 +50,20 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
 
       - name: Execute Gradle build
-        run: |
-          cd ./android-project
-          ./gradlew app:assembleDevDebug &&  ./gradlew app:assembleDevDebugUnitTest
+        run: ./gradlew app:assembleDevDebug &&  ./gradlew app:assembleDevDebugUnitTest
 
       - name: Run Dev Debug Unit Test
-        run: |
-          cd ./android-project
-          ./gradlew app:testDevDebugUnitTest
+        run: ./gradlew app:testDevDebugUnitTest
 
       - name: Create test report
-        run: |
-          cd ./android-project
-          ./gradlew createDevDebugCoverageReport
+        run: ./gradlew createDevDebugCoverageReport
 
       - name: Run gradle project
-        run: |
-          cd ./android-project
-          ./gradlew buildDevDebug
+        run: ./gradlew buildDevDebug
 
       # Create APK Debug
       - name: Build apk debug project (APK) - ${{ env.main_project_module }} module
-        run: |
-          cd ./android-project
-          ./gradlew assembleDevDebug
+        run: ./gradlew assembleDevDebug
 
       # Create APK Release
       # - name: Build apk release project (APK) - ${{ env.main_project_module }} module
