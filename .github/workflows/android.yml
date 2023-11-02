@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./android-dapp
+        working-directory: ./android-project
 
     steps:
       - uses: actions/checkout@v3
