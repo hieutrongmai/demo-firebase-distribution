@@ -49,44 +49,44 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
 
-      - name: Execute Gradle build
-        run: ./gradlew app:assembleDevDebug &&  ./gradlew app:assembleDevDebugUnitTest
+      - name: Execute Gradle build Dev Release
+        run: ./gradlew app:assembleDevRelease &&  ./gradlew app:assembleDevReleaseUnitTest
 
-      - name: Run Dev Debug Unit Test
-        run: ./gradlew app:testDevDebugUnitTest
+      - name: Run Dev Release Unit Test
+        run: ./gradlew app:testDevReleaseUnitTest
 
       - name: Create test report
-        run: ./gradlew createDevDebugCoverageReport
+        run: ./gradlew createDevReleaseCoverageReport
 
       - name: Run gradle project
-        run: ./gradlew buildDevDebug
+        run: ./gradlew buildDevRelease
 
-      # Create APK Debug
+      # Create APK Dev Debug
       - name: Build apk debug project (APK) - ${{ env.main_project_module }} module
         run: ./gradlew assembleDevDebug
 
-      # Create APK Release
-      # - name: Build apk release project (APK) - ${{ env.main_project_module }} module
-        # run: ./gradlew assemble
+      # Create APK Dev Release
+      - name: Build apk release project (APK) - ${{ env.main_project_module }} module
+        run: ./gradlew assembleDevRelease
 
       # Upload Artifact Build
-      # Noted For Output [main_project_module]/build/outputs/apk/debug/
+      # Noted For Output [main_project_module]/build/outputs/apk/dev/debug/
       - name: Upload APK Debug - ${{ env.repository_name }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - APK(s) debug generated
           path: android-project/${{ env.main_project_module }}/build/outputs/apk/dev/debug/
 
-      # Noted For Output [main_project_module]/build/outputs/apk/release/
+      # Noted For Output [main_project_module]/build/outputs/apk/dev/release/
       # - name: Upload APK Release - ${{ env.repository_name }}
-        # uses: actions/upload-artifact@v3
-        # with:
-          # name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - APK(s) release generated
-          # path: ${{ env.main_project_module }}/build/outputs/apk/release/
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - APK(s) release generated
+          path: android-project/${{ env.main_project_module }}/build/outputs/apk/dev/release/
         
-      - name: Upload Dev Debug artifact to Firebase App Distribution
+      - name: Upload Dev Release artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: 1:418167375742:android:f26868d0619266f7f0952f
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          file: android-project/${{ env.main_project_module }}/build/outputs/apk/dev/debug/app-dev-debug.apk
+          file: android-project/${{ env.main_project_module }}/build/outputs/apk/dev/release/app-dev-release.apk

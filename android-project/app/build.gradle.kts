@@ -44,6 +44,7 @@ android {
             isMinifyEnabled = true
             isDebuggable = false
             isShrinkResources = true
+            enableUnitTestCoverage = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -77,7 +78,7 @@ android {
         val dev by creating {
             dimension = "env"
             applicationIdSuffix = ".dev"
-            versionCode = 1
+            versionCode = 2
             versionNameSuffix = "-dev${versionCode.toString().padStart(2, '0')}"
             signingConfig = signingConfigs.getByName("dev")
         }
