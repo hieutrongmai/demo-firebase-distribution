@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
 }
 
 fun com.android.build.api.dsl.ApkSigningConfig.setupSigningConfig(fileName: String) {
@@ -43,6 +44,7 @@ android {
             isMinifyEnabled = true
             isDebuggable = false
             isShrinkResources = true
+            enableUnitTestCoverage = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -52,6 +54,7 @@ android {
         debug {
             isDebuggable = true
             isMinifyEnabled = false
+            enableUnitTestCoverage = true
         }
     }
 
@@ -75,7 +78,7 @@ android {
         val dev by creating {
             dimension = "env"
             applicationIdSuffix = ".dev"
-            versionCode = 1
+            versionCode = 2
             versionNameSuffix = "-dev${versionCode.toString().padStart(2, '0')}"
             signingConfig = signingConfigs.getByName("dev")
         }
@@ -103,4 +106,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
 }
