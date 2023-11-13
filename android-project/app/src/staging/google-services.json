@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "418167375742",
+    "project_id": "git-action-demo-28e53",
+    "storage_bucket": "git-action-demo-28e53.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:418167375742:android:0843d336b4745c10f0952f",
+        "android_client_info": {
+          "package_name": "com.example.demofirebasedistribution"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJUxnUUGNkBnWHUa-fxfWPVF4abab-gdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:418167375742:android:239b81b4f5b3fc25f0952f",
+        "android_client_info": {
+          "package_name": "com.example.demofirebasedistribution.staging"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJUxnUUGNkBnWHUa-fxfWPVF4abab-gdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
